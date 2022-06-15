@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react"
 import CommentContext from "../context/CommentContext"
 import Card from "./Card"
 
-function ModalDelete() {
+function ModalDelete({hiddeOverlay}) {
 
   const {currentCommentDelete, removeComment} = useContext(CommentContext)
   const [displayType, setDisplayType] = useState('none')
@@ -10,10 +10,12 @@ function ModalDelete() {
   function handleDelete() {
     removeComment(currentCommentDelete.item.id, currentCommentDelete.isReply)
     setDisplayType('none')
+    hiddeOverlay()
   }
 
   function handleDisplay() {
     setDisplayType('none')
+    hiddeOverlay()
   }
 
   useEffect(()=> {

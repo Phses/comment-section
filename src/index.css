@@ -29,20 +29,21 @@ img {
 
 .container {
   width: 80%;
+  height: 100%;
   max-width: 850px;
   margin: 20px auto;
 }
 
 
 .overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0,0,0,0.6);
   backdrop-filter: blur(3px);
-  z-index: 5;
+  z-index: 10;
 }
 
 .btn {
@@ -73,6 +74,17 @@ img {
 
 }
 
+@media (max-width: 500px) {
+  .card.comment {
+    grid-template: 
+  'commentHeader commentHeader commentHeader commentHeader' 50px
+  'commentContent commentContent commentContent commentContent' 1fr
+  'commentVote commentVote commentVote commentVote' 50px  
+  'form form form form' 0.5fr
+  / 1fr 1fr 50px 1fr;
+  }
+}
+
 .card.replie {
   display: grid;
   width: 80%;
@@ -88,6 +100,18 @@ img {
   /* animation: fadein 0.5s ease-in; */
 }
 
+@media (max-width: 500px) {
+  .card.replie {
+    min-width: 100%;
+    grid-template: 
+  'commentHeader commentHeader commentHeader commentHeader' 50px
+  'commentContent commentContent commentContent commentContent' 1fr
+  'commentVote commentVote commentVote commenteVote' 50px  
+  'form form form form' 0.5fr
+  / 1fr 1fr 50px 1fr;
+  }
+}
+
 .header-comment {
   display: flex;
   flex-wrap: wrap;
@@ -95,6 +119,13 @@ img {
   grid-area: commentHeader;
   margin-bottom: 20px;
   gap: 20px
+}
+
+@media (max-width: 500px) {
+  .header-comment .comment-createdAt {
+    display: none;
+  }
+  
 }
 
 .header-comment .img-profile-comment {
@@ -107,6 +138,30 @@ img {
   gap: 10px;
   color: var(--primary-color);
   font-weight: 700;
+}
+
+.btn-container {
+  display: flex;
+  margin-left: auto;
+  gap: 20px;
+  grid-area: btnContainer;
+}
+
+@media (max-width: 800px) {
+  .btn-container {
+    gap: 10px;
+  }
+  
+}
+
+.btn-container span {
+  display: inline-block;
+}
+
+@media (max-width: 800px) {
+  .btn-container span {
+    display: none;
+  }
 }
 
 .currentUser-id {
@@ -129,10 +184,23 @@ img {
   font-weight: 700;
 }
 
+@media (max-width: 500px) {
+  .comment-vote {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+}
 .comment-content {
   grid-area: commentContent;
   color: var(--comment-text-color);
   line-height: 1.4rem;
+}
+
+.comment-content span {
+  font-weight: 700;
+  color:hsl(238, 40%, 52%)
 }
 
 .card.form-container {

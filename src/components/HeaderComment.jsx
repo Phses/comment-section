@@ -3,13 +3,14 @@ import { useContext } from 'react'
 import CommentContext from '../context/CommentContext'
 
 
-function HeaderComment({item, isReply, userOwner}) {
+function HeaderComment({item, isReply, userOwner, showOverlayScreen}) {
 
   const {editComment, setDeleteComment, setReply} = useContext(CommentContext)
   
   function handleDelete() {
     // Marca o comment que queremos exluir e fazemos aparecer o modal com o useEffect 
     setDeleteComment(item, isReply)
+    showOverlayScreen()
   }
 
   //Além de mostrar o form eu preciso setar o value do form com o nome do userowner do comment a quem se destina o reply
@@ -35,9 +36,11 @@ function HeaderComment({item, isReply, userOwner}) {
 
       <small className="comment-createdAt">{item.createdAt}</small>
 
-      {userOwner && <button onClick={handleDelete}  className='btn btn-icon' style={{color: 'hsl(358, 79%, 66%)'}}><img className='icon-delete' src="./images/icon-delete.svg" alt='icon-delete'></img>Delete</button>}
+      <div className='btn-container'>
+        {userOwner && <button onClick={handleDelete}  className='btn btn-icon' style={{color: 'hsl(358, 79%, 66%)'}}><img className='icon-delete' src="./images/icon-delete.svg" alt='icon-delete'></img><span>Delete</span></button>}
 
-      {userOwner ? <button onClick={handleClickEdit} className='btn btn-icon'><img className='icon-edit' src="./images/icon-edit.svg" alt=''></img>Edit</button> : <button className='btn btn-icon' onClick={handleClickReply}><img className='icon-reply' src="./images/icon-reply.svg" alt=''></img>Reply</button>}
+        {userOwner ? <button onClick={handleClickEdit} className='btn btn-icon'><img className='icon-edit' src="./images/icon-edit.svg" alt=''></img><span>Edit</span></button> : <button className='btn btn-icon' onClick={handleClickReply}><img className='icon-reply' src="./images/icon-reply.svg" alt=''></img><span>Reply</span></button>}
+      </div>
 
     </div>
   )
@@ -45,10 +48,6 @@ function HeaderComment({item, isReply, userOwner}) {
 
 HeaderComment.propTypes = {
   userOwner: PropTypes.bool.isRequired
-}
-
-HeaderComment.defaultProps = {
-    currentUser: false,
 }
 
 export default HeaderComment

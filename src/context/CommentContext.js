@@ -1,71 +1,24 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 const CommentContext = createContext()
 
 export const CommentProvider = ({children}) => {
 
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      content: "Impressive! Though it seems the drag feature could be improved. But overall it looks incredible. You've nailed the design and the responsiveness at various breakpoints works really well.",
-      createdAt: "1 month ago",
-      score: 12,
-      user: {
-        image: { 
-          png: "./images/avatars/image-amyrobson.png",
-          webp: "./images/avatars/image-amyrobson.webp"
-        },
-        username: "amyrobson"
-      },
-      replies: []
-    },
-    {
-      id: 2,
-      content: "Woah, your project looks awesome! How long have you been coding for? I'm still new, but think I want to dive into React as well soon. Perhaps you can give me an insight on where I can learn React? Thanks!",
-      createdAt: "2 weeks ago",
-      score: 5,
-      user: {
-        image: { 
-          png: "./images/avatars/image-maxblagun.png",
-          webp: "./images/avatars/image-maxblagun.webp"
-        },
-        username: "maxblagun"
-      },
-      replies: [
-        {
-          id: 3,
-          content: "If you're still new, I'd recommend focusing on the fundamentals of HTML, CSS, and JS before considering React. It's very tempting to jump ahead but lay a solid foundation first.",
-          createdAt: "1 week ago",
-          score: 4,
-          replyingTo: "maxblagun",
-          replyingToId: 2,
-          user: {
-            image: { 
-              "png": "./images/avatars/image-ramsesmiron.png",
-              "webp": "./images/avatars/image-ramsesmiron.webp"
-            },
-            username: "ramsesmiron"
-          }
-        },
-        {
-          id: 4,
-          content: "I couldn't agree more with this. Everything moves so fast and it always seems like everyone knows the newest library/framework. But the fundamentals are what stay constant.",
-          createdAt: "2 days ago",
-          score: 2,
-          replyingTo: "ramsesmiron",
-          replyingToId: 2,
-          user: {
-            "image": { 
-              "png": "./images/avatars/image-juliusomo.png",
-              "webp": "./images/avatars/image-juliusomo.webp"
-            },
-            username: "juliusomo"
-          }
-        }
-      ]
-    }     
-  ]
-  )
+  const [comments, setComments] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    fetchFeedback()
+  }, [])
+
+  //fetch dados do servidor
+
+  async function fetchFeedback() {
+    const response = await fetch('/comments')
+    const data = await response.json()
+    setComments(data)
+    setIsLoading(false)
+  }
 
   const currentUser =  {
     user: {
@@ -77,7 +30,7 @@ export const CommentProvider = ({children}) => {
   }
 }
 
-  
+
   const [currentCommentEdit, setCurrentCommentEdit] = useState({
     item: {},
     edit: false
@@ -96,12 +49,18 @@ export const CommentProvider = ({children}) => {
   
 
   function editComment(item) {
-    console.log(item)
-    setCurrentCommentEdit({
-      item: item,
-      edit: true,
-      displayForm: 'visible'
-    })
+
+    if (currentCommentEdit.item === item) {
+      setCurrentCommentEdit({
+        item: {},
+        edit: false,
+      })
+    } else {
+        setCurrentCommentEdit({
+        item: item,
+        edit: true,
+      })
+    }
   }
   
   function setDeleteComment(item, isReply) {
@@ -114,36 +73,64 @@ export const CommentProvider = ({children}) => {
 }
 
   function setReply(item) {
-    console.log(item)
-    setCurrentCommentReply({
-      item: item,
-      reply: true
-    }) 
+    if(currentCommentReply.item !== item) {
+      setCurrentCommentReply({
+        item: item,
+        reply: true
+      }) 
+    } else {
+      setCurrentCommentReply({
+        item: {},
+        reply: false
+      }) 
+    }
   }
 
-  function addComment(newComment) {
-    setComments([newComment,...comments]);
+  async function addComment(newComment) {
+    const response = await fetch('/comments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newComment)
+    })
+
+    const data = await response.json()
+
+    setComments([...comments, data])
   }
 
-  function addReply(id, isReply, newReply) {
+  async function addReply(id, isReply, newReply) {
     if(!isReply) {
-      let newComments = []
-      comments.forEach((comment) => {
-        if (comment.id === id) {
+      let newComment = {} 
+        comments.forEach((comment) =>{
+        if(comment.id === id) {
           comment.replies.push(newReply)
-          newComments.push(comment)
-        } else {
-          newComments.push(comment)
+          newComment = comment
         }
       })
-      setComments(newComments)
+      const response = await fetch(`/comments/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newComment)
+      })
+      const data = await response.json()
+      setComments(comments.map((item) => (item.id === id ? data : item)))
+      setCurrentCommentReply({
+        item: {},
+        reply: false
+      })
     } else {
-      let newComments = [] 
+      let newComment
+      let idComment 
       comments.forEach((comment) => {
         if(comment.replies.length > 0) {
           let newReplies = []
           comment.replies.forEach((reply) => {
             if(reply.id === id){
+              idComment = comment.id
               newReplies.push(reply)
               newReplies.push(newReply)
             } else {
@@ -151,82 +138,158 @@ export const CommentProvider = ({children}) => {
             }
           })
           comment.replies = [...newReplies]
-          newComments.push(comment) 
-        } else {
-          newComments.push(comment)
-        }
+          newComment = comment
+        } 
       })
-      setComments(newComments)
+      const response = await fetch(`/comments/${idComment}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newComment)
+      })
+      const data = await response.json()
+      setComments(comments.map((item) => (item.id === idComment ? data : item)))
+      setCurrentCommentReply({
+        item: {},
+        reply: false
+      })
     }
   }
 
-  function updateComment(isReply, newContent) {
+  async function updateComment(isReply, newContent) {
     if (isReply) {
-      console.log('teste 1', newContent)
-      let newComments = comments.map((comment) => {
+      let newComment
+      let commentId 
+      comments.forEach((comment) => {
         if(comment.replies.length > 0) {
-            let newReplies = comment.replies.map((reply) => reply.id === newContent.id ? {...reply,...newContent} : reply) 
-            comment.replies = [...newReplies]
-            return comment        
-        } else {
-          return comment
-        }
-      })
-      setComments(newComments)
+          for(let i = 0; i < comment.replies.length; i++) {
+            if(comment.replies[i].id === newContent.id) {
+              newComment = comment
+              commentId = comment.id
+              let newReplies = comment.replies.map((reply) => reply.id === newContent.id ? {...reply,...newContent} : reply) 
+              newComment.replies = [...newReplies]   
+            }
+          }
+          } 
+        })
+
+        const response = await fetch(`/comments/${commentId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newComment)
+        })
+
+        const data = await response.json()
+
+        setComments(comments.map((comment) => comment.id === commentId ? data : comment))
+        setCurrentCommentEdit({
+          item: {},
+          edit: false,
+        })
+      
       } else {
-        console.log('teste 2', newContent)
-        setComments(comments.map((comment) => comment.id === newContent.id ? {...comment,...newContent} : comment))
+        let newComment 
+        comments.forEach((comment) => {
+          if (comment.id === newContent.id) { 
+            newComment = {...comment,...newContent}
+          }
+        }) 
+        const response = await fetch(`/comments/${newContent.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newComment)
+        })
+
+        const data = await response.json()
+
+        setComments(comments.map((comment) => comment.id === newContent.id ? data : comment))
+        setCurrentCommentEdit({
+          item: {},
+          edit: false,
+        })
       }
     }
 
-    function removeComment(id, isReplie) {
+   async function removeComment(id, isReplie) {
       if (isReplie) {
-        let newComments = []
+        let newComment
+        let idComment
         comments.forEach((comment) => { 
-          if(comment.replies.length === 0) {
-            newComments.push(comment)
-          } else {
+          if(comment.replies.length > 0) {
             for(let i = 0; i < comment.replies.length; i++) {
               if(comment.replies[i].id === id) {
-                comment.replies.pop(comment.replies[i])
+                idComment = comment.id
+                newComment = comment
+                newComment.replies = comment.replies.filter((replie) => replie.id !== id)
               }
             }
-            newComments.push(comment)
           }
-          setComments(newComments)
-        })
+          })
+          const response = await fetch(`/comments/${idComment}`,{
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newComment)
+          })
+          const data = await response.json()
+          setComments(comments.map((comment) => comment.id === id ? data : comment))
         } else {
+          await fetch(`/comments/${id}`,{
+            method: 'DELETE'
+          })
         setComments(comments.filter((comment) => comment.id !== id))
       }
     }
 
-    function updateVote(id, isReply, newScore) {
+    async function updateVote(id, isReply, newScore) {
       if(!isReply) {
-        setComments(comments.map((comment) => {
+        let newComment
+        comments.forEach((comment) => {
           if(comment.id === id) {
             comment.score = newScore
-            return comment
-          } else {
-            return comment
-          }
-        }))
+            newComment = comment
+          } 
+        })
+        const response = await fetch(`/comments/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newComment)
+        })
+        const data = await response.json()
+
+        setComments(comments.map((comment)=> comment.id === id ? data : comment))
       } else {
-        setComments(comments.map((comment) => {
+        let newComment
+        let commentId
+        comments.forEach((comment) => {
           if(comment.replies.length > 0) {
-            let newReplies = comment.replies.map((reply) => {
-              if(reply.id === id) {
-                reply.score = newScore
-                return reply
-              } else {
-                return reply
-              }
-            })
-            comment.replies = newReplies
-            return comment
-          } else {
-            return comment
+            for(let i = 0; i < comment.replies.length; i++ ) {
+                if(comment.replies[i].id === id) {
+                  commentId = comment.id
+                  comment.replies[i].score = newScore
+                  newComment = comment
+                } 
+            }
           }
-        }))
+        })
+        const response = await fetch(`/comments/${commentId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newComment)
+        })
+        const data = await response.json()
+
+        setComments(comments.map((comment)=> comment.id === commentId ? data : comment))
       }
     }
 
@@ -236,6 +299,7 @@ export const CommentProvider = ({children}) => {
     currentCommentEdit,
     currentCommentDelete,
     currentCommentReply,
+    isLoading,
     addComment,
     addReply,
     updateComment,

@@ -8,7 +8,7 @@ import HeaderComment from './HeaderComment'
 import CommentForm from './shered/CommentForm'
 import CommentContext from '../context/CommentContext'
 
-function ComentItem({item, isReply, userOwner}) {
+function ComentItem({item, isReply, userOwner, showOverlayScreen}) {
   
   const {currentCommentEdit, currentCommentReply} = useContext(CommentContext)
 
@@ -16,26 +16,26 @@ function ComentItem({item, isReply, userOwner}) {
 
   useEffect(()=> {
     if(currentCommentEdit.item.id === item.id){
-      if(displayType === 'hidden') {
+      if(currentCommentEdit.edit) {
         setDisplayType('visible')
       } else{
         setDisplayType('hidden')
       }
     }
-  },[currentCommentEdit, item.id, displayType])
+  },[currentCommentEdit, item.id])
 
 
   //Eu preciso verificar se o id do comentário possui o mesmo id do currentCommentReply para fazer as moficações se não a modificação do estado é aplicada em todos os comments. Aparece uma menssagem missin dependencies que só resolve se eu colocar item.id como dependencia
 
   useEffect(() => {
     if(currentCommentReply.item.id === item.id) {
-      if(displayType === 'hidden') {
+      if(currentCommentReply.reply === true) {
         setDisplayType('visible')
       } else{
         setDisplayType('hidden')
       }
     }
-  },[currentCommentReply, item.id, displayType])
+  },[currentCommentReply, item.id])
 
   // function showTextField() {
   //   if(displayType === 'hidden') {
@@ -48,9 +48,9 @@ function ComentItem({item, isReply, userOwner}) {
 
   return (
     <Card className={isReply ? 'replie' : 'comment'}>
-      <HeaderComment item={item} isReply={isReply} userOwner={userOwner} />
+      <HeaderComment item={item} isReply={isReply} userOwner={userOwner} showOverlayScreen={showOverlayScreen}/>
       <CommentVote item={item} isReply={isReply}/>
-      <CommentContent content={item.content}/>
+      <CommentContent isReply={isReply} item={item}/>
       <CommentForm item={item} displayType={displayType} isReply={isReply} userOwner={userOwner} btnType={userOwner ? 'update' : 'reply'}/>
     </Card>
   )

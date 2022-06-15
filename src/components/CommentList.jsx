@@ -1,5 +1,6 @@
 import React from 'react'
 import { useContext } from 'react'
+import Spinner from './shered/Spinner'
 import ComentItem from './ComentItem'
 import {v4 as uuidv4} from 'uuid' 
 import CommentContext from '../context/CommentContext'
@@ -7,14 +8,17 @@ import CommentContext from '../context/CommentContext'
 
 //Recebe os dados salvos em um array e forma uma lista de componentes para cada comentario.
 
-function CommentList() {
+function CommentList({showOverlayScreen}) {
 
-  const {comments, currentUser} = useContext(CommentContext)
+  const {comments, currentUser, isLoading} = useContext(CommentContext)
 
-  if (!comments || comments.length === 0) {
+  if (!isLoading && (!comments || comments.length === 0)) {
     return <p>No comments yet</p>
   }
-  return (
+
+  return isLoading ? (
+    <Spinner />
+  ) : (
     <div className='comment-list'>
       {comments.map((item) => {
         let commentOwner = item.user.username
@@ -29,7 +33,7 @@ function CommentList() {
           return (
             <div key={uuidv4()}>
               {/* Componete do corrente comentário */}
-                <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user}/>
+                <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user} showOverlayScreen={showOverlayScreen}/>
               {item.replies.map((item) => {
                 //Faz as verificações se a resposta é do corrente usuário e passa isReply como true
                  let commentOwner = item.user.username
@@ -40,7 +44,7 @@ function CommentList() {
                   } 
                 return (
                   // Retorna a resposta do comentário como um componente
-                  <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user}/>
+                  <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user} showOverlayScreen={showOverlayScreen}/>
                 )
               })}
             </div>
@@ -48,7 +52,7 @@ function CommentList() {
         }
         //Se não há respostas para o comentário o componente do corrente item é simplesmente retornado
         else return (
-          <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user}/>
+          <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user} showOverlayScreen={showOverlayScreen}/>
         )
       })}
     </div>

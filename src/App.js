@@ -19,15 +19,25 @@ function App() {
   }
   
   const [showOverlay, setShowOverlay] = useState(false)
+
+  function showOverlayScreen() {
+    setShowOverlay(true)
+    console.log('funciona')
+  }
+
+  function hiddeOverlay() {
+    setShowOverlay(false)
+  }
   
   return (
     <CommentProvider>
+      {showOverlay && <div className='overlay'></div>} 
       <div className="container">
-        <CommentList/>
+        <CommentList showOverlayScreen={showOverlayScreen}/>
         <Card className={'form-container'}>
-        <CommentForm item={user} value={''} isReply={false} displayType={'visible'} userOwner={true} btnType={'send'}/>
+          <CommentForm item={user} value={''} isReply={false} displayType={'visible'} userOwner={true} btnType={'send'}/>
         </Card>
-        <ModalDelete/>
+        <ModalDelete hiddeOverlay={hiddeOverlay}/>
       </div>
     </CommentProvider>
   );

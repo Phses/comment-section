@@ -47,9 +47,11 @@ function CommentForm({item, displayType,isReply, userOwner, btnType}) {
           })
         }
       } else {
+        const content = value.split(/(\W+)/).slice(3).join('')
+        console.log(content)
         addReply(item.id, isReply,{
           id: uuidv4(),
-          content: value,
+          content: content,
           createdAt: "today",
           score: 4,
           replyingTo: item.user.username,
@@ -87,7 +89,6 @@ function CommentForm({item, displayType,isReply, userOwner, btnType}) {
 
   const handleChange = (e) => {
     setValue(e.target.value)
-    console.log(value)
   }
   return (
     <>
