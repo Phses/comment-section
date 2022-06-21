@@ -14,7 +14,7 @@ export const CommentProvider = ({children}) => {
   //fetch dados do servidor
 
   async function fetchFeedback() {
-    const response = await fetch('/comments')
+    const response = await fetch('https://glossy-veil-espadrille.glitch.me/comments')
     const data = await response.json()
     setComments(data)
     setIsLoading(false)
@@ -87,7 +87,7 @@ export const CommentProvider = ({children}) => {
   }
 
   async function addComment(newComment) {
-    const response = await fetch('/comments', {
+    const response = await fetch('https://glossy-veil-espadrille.glitch.me/comments', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ export const CommentProvider = ({children}) => {
           newComment = comment
         }
       })
-      const response = await fetch(`/comments/${id}`, {
+      const response = await fetch(`https://glossy-veil-espadrille.glitch.me/comments/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export const CommentProvider = ({children}) => {
           newComment = comment
         } 
       })
-      const response = await fetch(`/comments/${idComment}`, {
+      const response = await fetch(`https://glossy-veil-espadrille.glitch.me/comments/${idComment}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ export const CommentProvider = ({children}) => {
           } 
         })
 
-        const response = await fetch(`/comments/${commentId}`, {
+        const response = await fetch(`https://glossy-veil-espadrille.glitch.me/comments/${commentId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -197,7 +197,7 @@ export const CommentProvider = ({children}) => {
             newComment = {...comment,...newContent}
           }
         }) 
-        const response = await fetch(`/comments/${newContent.id}`, {
+        const response = await fetch(`https://glossy-veil-espadrille.glitch.me/comments/${newContent.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -230,7 +230,7 @@ export const CommentProvider = ({children}) => {
             }
           }
           })
-          const response = await fetch(`/comments/${idComment}`,{
+          const response = await fetch(`https://glossy-veil-espadrille.glitch.me/comments/${idComment}`,{
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -240,7 +240,7 @@ export const CommentProvider = ({children}) => {
           const data = await response.json()
           setComments(comments.map((comment) => comment.id === id ? data : comment))
         } else {
-          await fetch(`/comments/${id}`,{
+          await fetch(`https://glossy-veil-espadrille.glitch.me/comments/${id}`,{
             method: 'DELETE'
           })
         setComments(comments.filter((comment) => comment.id !== id))
@@ -256,7 +256,7 @@ export const CommentProvider = ({children}) => {
             newComment = comment
           } 
         })
-        const response = await fetch(`/comments/${id}`, {
+        const response = await fetch(`https://glossy-veil-espadrille.glitch.me/comments/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -280,7 +280,7 @@ export const CommentProvider = ({children}) => {
             }
           }
         })
-        const response = await fetch(`/comments/${commentId}`, {
+        const response = await fetch(`https://glossy-veil-espadrille.glitch.me/comments/${commentId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
