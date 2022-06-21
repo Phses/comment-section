@@ -1,4 +1,5 @@
-import { useState } from 'react'
+
+import Overlay from './components/Overlay';
 import CommentForm from "./components/shered/CommentForm";
 import CommentList from "./components/CommentList"
 import Card from './components/Card';
@@ -18,26 +19,16 @@ function App() {
       }
   }
   
-  const [showOverlay, setShowOverlay] = useState(false)
-
-  function showOverlayScreen() {
-    setShowOverlay(true)
-    console.log('funciona')
-  }
-
-  function hiddeOverlay() {
-    setShowOverlay(false)
-  }
   
   return (
     <CommentProvider>
-      {showOverlay && <div className='overlay'></div>} 
+      <Overlay/>
       <div className="container">
-        <CommentList showOverlayScreen={showOverlayScreen}/>
+        <CommentList/>
         <Card className={'form-container'}>
           <CommentForm item={user} value={''} isReply={false} displayType={'visible'} userOwner={true} btnType={'send'}/>
         </Card>
-        <ModalDelete hiddeOverlay={hiddeOverlay}/>
+        <ModalDelete/>
       </div>
     </CommentProvider>
   );

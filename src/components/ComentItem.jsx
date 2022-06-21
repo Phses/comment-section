@@ -8,7 +8,7 @@ import HeaderComment from './HeaderComment'
 import CommentForm from './shered/CommentForm'
 import CommentContext from '../context/CommentContext'
 
-function ComentItem({item, isReply, userOwner, showOverlayScreen}) {
+function ComentItem({item, isReply, userOwner}) {
   
   const {currentCommentEdit, currentCommentReply} = useContext(CommentContext)
 
@@ -48,7 +48,7 @@ function ComentItem({item, isReply, userOwner, showOverlayScreen}) {
 
   return (
     <Card className={isReply ? 'replie' : 'comment'}>
-      <HeaderComment item={item} isReply={isReply} userOwner={userOwner} showOverlayScreen={showOverlayScreen}/>
+      <HeaderComment item={item} isReply={isReply} userOwner={userOwner}/>
       <CommentVote item={item} isReply={isReply}/>
       <CommentContent isReply={isReply} item={item}/>
       <CommentForm item={item} displayType={displayType} isReply={isReply} userOwner={userOwner} btnType={userOwner ? 'update' : 'reply'}/>

@@ -63,12 +63,12 @@ export const CommentProvider = ({children}) => {
     }
   }
   
-  function setDeleteComment(item, isReply) {
-    console.log(item)
+  function setDeleteComment(item, isReply, isDelete) {
+    console.log(isDelete)
    setCurrentCommenDelete({
      item: item,
      isReply: isReply,
-     delete: true,
+     delete: isDelete,
   })
 }
 

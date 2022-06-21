@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 
 function Card({children, className, display}) {
   return (
@@ -5,6 +7,12 @@ function Card({children, className, display}) {
       {children}
     </div>
   )
+}
+
+Card.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+  display: PropTypes.string,
 }
 
 Card.defaultProps = {

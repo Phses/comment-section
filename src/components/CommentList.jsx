@@ -8,7 +8,7 @@ import CommentContext from '../context/CommentContext'
 
 //Recebe os dados salvos em um array e forma uma lista de componentes para cada comentario.
 
-function CommentList({showOverlayScreen}) {
+function CommentList() {
 
   const {comments, currentUser, isLoading} = useContext(CommentContext)
 
@@ -33,7 +33,7 @@ function CommentList({showOverlayScreen}) {
           return (
             <div key={uuidv4()}>
               {/* Componete do corrente comentário */}
-                <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user} showOverlayScreen={showOverlayScreen}/>
+                <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user}/>
               {item.replies.map((item) => {
                 //Faz as verificações se a resposta é do corrente usuário e passa isReply como true
                  let commentOwner = item.user.username
@@ -44,7 +44,7 @@ function CommentList({showOverlayScreen}) {
                   } 
                 return (
                   // Retorna a resposta do comentário como um componente
-                  <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user} showOverlayScreen={showOverlayScreen}/>
+                  <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user}/>
                 )
               })}
             </div>
@@ -52,7 +52,7 @@ function CommentList({showOverlayScreen}) {
         }
         //Se não há respostas para o comentário o componente do corrente item é simplesmente retornado
         else return (
-          <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user} showOverlayScreen={showOverlayScreen}/>
+          <ComentItem key={item.id} item={item} isReply={isReply} userOwner={user} />
         )
       })}
     </div>

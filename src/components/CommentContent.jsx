@@ -9,7 +9,8 @@ function CommentContent({isReply, item}) {
 }
 
 CommentContent.propTypes = {
-  content: PropTypes.string.isRequired
+  isReply: PropTypes.bool.isRequired,
+  item: PropTypes.object.isRequired
 }
 
 

@@ -3,19 +3,18 @@ import { useContext } from 'react'
 import CommentContext from '../context/CommentContext'
 
 
-function HeaderComment({item, isReply, userOwner, showOverlayScreen}) {
+function HeaderComment({item, isReply, userOwner}) {
 
   const {editComment, setDeleteComment, setReply} = useContext(CommentContext)
   
   function handleDelete() {
     // Marca o comment que queremos exluir e fazemos aparecer o modal com o useEffect 
-    setDeleteComment(item, isReply)
-    showOverlayScreen()
+    setDeleteComment(item, isReply, true)
   }
 
   //Além de mostrar o form eu preciso setar o value do form com o nome do userowner do comment a quem se destina o reply
   function handleClickReply() {
-      setReply(item)
+    setReply(item)
   }
 
   function handleClickEdit() {
@@ -47,6 +46,8 @@ function HeaderComment({item, isReply, userOwner, showOverlayScreen}) {
 }
 
 HeaderComment.propTypes = {
+  item: PropTypes.object.isRequired,
+  isReply: PropTypes.bool,
   userOwner: PropTypes.bool.isRequired
 }
 

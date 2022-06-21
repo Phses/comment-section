@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import SubmitBtn from './SubmitBtn'
 import {v4 as uuidv4} from 'uuid'
 
-function CommentForm({item, displayType,isReply, userOwner, btnType}) {
+function CommentForm({item, displayType, isReply, userOwner, btnType}) {
 
   const {addComment, addReply, updateComment, currentCommentEdit, currentCommentReply} = useContext(CommentContext)
 
